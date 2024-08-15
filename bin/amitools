@@ -10,8 +10,17 @@ import os
 import sys
 import importlib
 
+def resolve_links(path):
+  while True:
+    try:
+      new_path = os.readlink(path)
+      if new_path[0] != '/': new_path = os.path.join(os.path.dirname(path), new_path)
+      path = new_path
+    except Exception as e:
+      return path
+
 # get current directory
-cur_dir = os.path.dirname(__file__)
+cur_dir = os.path.dirname(resolve_links(__file__))
 # amitools folder is in parent dir
 base_dir = os.path.abspath(os.path.join(cur_dir, os.pardir))
 # check for amitools dir
